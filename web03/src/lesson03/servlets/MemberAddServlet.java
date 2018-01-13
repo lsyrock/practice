@@ -55,12 +55,21 @@ public class MemberAddServlet extends HttpServlet {
 			stmt.setString(3, request.getParameter("name"));
 			stmt.executeUpdate();
 			
+			response.sendRedirect("list");
+			
+			
 			response.setContentType("text/html; charset=UTF-8");
 			PrintWriter out = response.getWriter();
 			out.println("<html><head><title>회원등록결과!!</title></head>");
+			out.println("<meta http-equiv='Refresh' content='50; url=list'>");
 			out.println("<body>");
 			out.println("<p>등록 성공입니다!</p>");
 			out.println("</body></html>");
+			
+			//리프래시 정보를 응답 헤더에 추가
+			//response.addHeader("Refresh", "50;url=list");
+			
+			
 		} catch(Exception e){
 			throw new ServletException(e);
 		} finally{
