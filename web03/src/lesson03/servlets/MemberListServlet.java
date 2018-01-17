@@ -34,15 +34,17 @@ public class MemberListServlet extends GenericServlet {
 				rs = stmt.executeQuery(
 						"select mno, mname, email, cre_date from members");
 				
-				response.setContentType("text/html; charset=UTF-8");
+				//response.setContentType("text/html; charset=UTF-8");
 				PrintWriter out = response.getWriter();
 				out.println("<html><head><title>회원목록</title></head>");
 				out.println("<body><h1>회원목록</h1>");
 				out.println("<p><a href='add'>신규 회원 생성</a></p>");
 				while(rs.next()){
+					System.out.println(rs.getString("MNAME"));
 					out.println(
 							rs.getString("MNO") + "," +
-							rs.getString("MNAME") + "," +
+						    "<a href='update?no=" + rs.getInt("MNO") + "'>" +
+							rs.getString("MNAME") + "</a>," +
 							rs.getString("EMAIL") + "," +
 							rs.getDate("CRE_DATE") + "<br>");
 				}
