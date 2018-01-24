@@ -6,18 +6,27 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.sql.DriverManager;
+import java.util.ArrayList;
 
 import javax.servlet.GenericServlet;
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import lesson03.vo.Member;
 
 @WebServlet("/member/list")
-public class MemberListServlet extends GenericServlet {
-
+public class MemberListServlet extends HttpServlet {
+	private static final long serialVersionUID = 1L;
+	
 	@Override
-	public void service(ServletRequest request, ServletResponse response)
+	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
 			Connection conn = null;
@@ -25,30 +34,35 @@ public class MemberListServlet extends GenericServlet {
 			ResultSet rs = null;
 			
 			try {
-				DriverManager.registerDriver(new com.mysql.jdbc.Driver());
-				conn = DriverManager.getConnection(
-						"jdbc:mysql://localhost:3306/studydb?autoReconnect=true&useSSL=false",
-						"test",
-						"123123");
+				ServletContext sc = this.getServletContext();
+				Class.forName(sc.getInitParameter("driver"));
+				conn = DriverManager.getConnection( sc.getInitParameter("url"),
+													sc.getInitParameter("username"),
+													sc.getInitParameter("password"));
 				stmt = conn.createStatement();
 				rs = stmt.executeQuery(
-						"select mno, mname, email, cre_date from members");
+						"select mno, mname, email, cre_date from members order by mno asc");
 				
-				//response.setContentType("text/html; charset=UTF-8");
-				PrintWriter out = response.getWriter();
-				out.println("<html><head><title>회원목록</title></head>");
-				out.println("<body><h1>회원목록</h1>");
-				out.println("<p><a href='add'>신규 회원 생성</a></p>");
+				response.setContentType("text/html charset=UTF-8");
+				ArrayList<Member> members = new ArrayList<Member>();
+				
+				//데이터베이스에서 회워 정보를 가져와 Member에 담는다
+				//그리고 Member객체를 ArrayList에 추가한다. 
 				while(rs.next()){
-					System.out.println(rs.getString("MNAME"));
-					out.println(
-							rs.getString("MNO") + "," +
-						    "<a href='update?no=" + rs.getInt("MNO") + "'>" +
-							rs.getString("MNAME") + "</a>," +
-							rs.getString("EMAIL") + "," +
-							rs.getDate("CRE_DATE") + "<br>");
+					members.add(new Member().setNo(rs.getInt("MNO"))
+							                .setName(rs.getString("MNAME"))
+							                .setEmail(rs.getString("EMAIL"))
+							                .setCreateDate(rs.getDate("CRE_DATE"))
+							);
 				}
-				out.println("</body></html>");
+				
+				//request에 회원 목록 데이ㅌ를 보관한다 .
+				request.setAttribute("members", members);
+				
+				//JSP로 출력을 위임한다. 
+				RequestDispatcher rd = request.getRequestDispatcher( "/member/MemberList.jsp");
+				rd.include(request, response);
+				
 				
 			} catch (Exception e){
 				throw new ServletException(e);
