@@ -69,13 +69,13 @@ public class MemberListServlet extends HttpServlet {
 				//memberDao.setConnection(conn);
 				
 				request.setAttribute("members", memberDao.selectList());
-				
+				request.setAttribute("viewUrl",  "/member/MemberList.jsp");
 				//JSP로 출력을 위임한다. 
-				RequestDispatcher rd = request.getRequestDispatcher( "/member/MemberList.jsp");
-				System.out.println("jsp 위임전");
+				//RequestDispatcher rd = request.getRequestDispatcher( "/member/MemberList.jsp");
+				//System.out.println("jsp 위임전");
 				//rd.forward(request, response);
-				rd.include(request, response);
-				System.out.println("jsp 위임 완료 ");
+				//rd.include(request, response);
+				//System.out.println("jsp 위임 완료 ");
 				
 			} catch (Exception e){
 				throw new ServletException(e);

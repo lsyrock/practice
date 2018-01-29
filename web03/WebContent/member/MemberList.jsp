@@ -13,7 +13,7 @@
 
 <jsp:include page="/taglib.jsp"/>
 <h1>회원 목록</h1>
-<p><a href='add'>신규 회원</a></p>
+<p><a href='add.do'>신규 회원</a></p>
 
 <jsp:useBean id="members"
 	      scope="request"
@@ -25,7 +25,7 @@
 for(Member member : members) {
 %>
 <%=member.getNo() %>,
-<a href='update?no=<%=member.getNo() %>'><%=member.getName() %></a>,
+<a href='update.do?no=<%=member.getNo() %>'><%=member.getName() %></a>,
 <%=member.getEmail() %>,
 <%=member.getCreateDate() %><br>
 <% } %>

@@ -6,11 +6,15 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 
+import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import lesson03.dao.MemberDao;
+import lesson03.vo.Member;
 
 @WebServlet("/member/add")
 public class MemberAddServlet extends HttpServlet {
@@ -19,18 +23,7 @@ public class MemberAddServlet extends HttpServlet {
 	protected void doGet( HttpServletRequest request, HttpServletResponse response )
 		throws ServletException, IOException{
 		
-		//response.setContentType("text/html; charset=UTF-8");
-		PrintWriter out = response.getWriter();
-		out.println("<http><head><title>회원등록</title></head>");
-		out.println("<body><h1>회원 등록</h1>");
-		out.println("<form action='add' method='post'>");
-		out.println("이름   : <input type='text' name='name'><br>");
-		out.println("이메일 : <input type='text' name='email'><br>");
-		out.println("암호   : <input type='password' name='password'><br>");
-		out.println("<input type='submit' value='추가'>");
-		out.println("<input type='reset' value='취소'><br>");
-		out.println("</form>");
-		out.println("</body></html>");
+		request.setAttribute("viewUrl",  "/member/MemberForm.jsp");
 	}
 	
 	@Override
@@ -55,7 +48,8 @@ public class MemberAddServlet extends HttpServlet {
 			stmt.setString(3, request.getParameter("name"));
 			stmt.executeUpdate();
 			
-			response.sendRedirect("list");		
+			//response.sendRedirect("list");
+			request.setAttribute("viewUrl", "redirect:list.do");
 			
 			//리다이렉 이후에 소스코드는 실행되지 않는다.
 			response.setContentType("text/html; charset=UTF-8");

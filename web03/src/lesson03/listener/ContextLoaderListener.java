@@ -22,14 +22,14 @@ import lesson03.util.DBConnectionPool;
 @WebListener
 public class ContextLoaderListener implements ServletContextListener{
 	
-	//Connection conn;
-	//DBConnectionPool connPool;
+	Connection conn;
+	DBConnectionPool connPool;
 	//BasicDataSource ds;
 	
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
 		try{
-			//ServletContext sc = event.getServletContext();
+			ServletContext sc = event.getServletContext();
 			
 			//Class.forName(sc.getInitParameter("driver"));
 			//conn = DriverManager.getConnection(
@@ -38,12 +38,12 @@ public class ContextLoaderListener implements ServletContextListener{
 			//		sc.getInitParameter("password")					
 			//);
 			
-			//connPool = new DBConnectionPool(
-			//		sc.getInitParameter("driver"),
-			//		sc.getInitParameter("url"),
-			//		sc.getInitParameter("username"),
-			//		sc.getInitParameter("password")
-			//		);
+			connPool = new DBConnectionPool(
+					sc.getInitParameter("driver"),
+					sc.getInitParameter("url"),
+					sc.getInitParameter("username"),
+					sc.getInitParameter("password")
+					);
 
 			//ds = new BasicDataSource();
 			//ds.setDriverClassName(sc.getInitParameter("driver"));
@@ -51,15 +51,15 @@ public class ContextLoaderListener implements ServletContextListener{
 			//ds.setUsername(sc.getInitParameter("username"));
 			//ds.setPassword(sc.getInitParameter("password"));
 			
-			ServletContext sc = event.getServletContext();
+			//ServletContext sc = event.getServletContext();
 			
-			InitialContext initialContext = new InitialContext();
-			DataSource ds = (DataSource)initialContext.lookup("java:comp/env/jdbc/studydb");
+			//InitialContext initialContext = new InitialContext();
+			//DataSource ds = (DataSource)initialContext.lookup("java:comp/env/jdbc/studydb");
 			
 			MemberDao memberDao = new MemberDao();
-			memberDao.setDataSource(ds);
-//			memberDao.setConnection(conn);
-			//memberDao.setDbConnectionPool(connPool);
+			//memberDao.setDataSource(ds);
+			//memberDao.setConnection(conn);
+			memberDao.setDbConnectionPool(connPool);
 			
 			sc.setAttribute("memberDao", memberDao);
 		} catch(Throwable e) {

@@ -1,6 +1,7 @@
 package lesson03.dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -18,13 +19,13 @@ public class MemberDao {
 	 //	 this.connection = connection;
 	 //}
 	 
-	//DBConnectionPool connPool;
+	DBConnectionPool connPool;
 	
 	DataSource ds;
 	
-	//public void setDbConnectionPool(DBConnectionPool connPool) {
-	//	this.connPool = connPool;
-	//}
+	public void setDbConnectionPool(DBConnectionPool connPool) {
+		this.connPool = connPool;
+	}
 	public void setDataSource(DataSource ds) {
 		this.ds = ds;
 	}
@@ -36,8 +37,8 @@ public class MemberDao {
 			
 		try{
 			
-			//connection = connPool.getConnection();
-			connection = ds.getConnection();
+			connection = connPool.getConnection();
+			//connection = ds.getConnection();
 			stmt = connection.createStatement();
 			rs = stmt.executeQuery(
 					"select mno, mname, email, cre_date from members order by mno asc");
@@ -61,4 +62,25 @@ public class MemberDao {
 			try{ if(connection != null) connection.close();} catch(Exception e){}
 		}	 
 	 }
+
+	 public int insert(Member member) throws Exception  {
+		    PreparedStatement stmt = null;
+		    Connection connection = null;
+		    try {
+		      connection = connPool.getConnection();
+		      stmt = connection.prepareStatement(
+		          "INSERT INTO MEMBERS(EMAIL,PWD,MNAME,CRE_DATE,MOD_DATE)"
+		              + " VALUES (?,?,?,NOW(),NOW())");
+		      stmt.setString(1, member.getEmail());
+		      stmt.setString(2, member.getPassword());
+		      stmt.setString(3, member.getName());
+		      return stmt.executeUpdate();
+
+		    } catch (Exception e) {
+		      throw e;
+
+		    } finally {
+		      try {if (stmt != null) stmt.close();} catch(Exception e) {}
+		    }
+		  } 
 }

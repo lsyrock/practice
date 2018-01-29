@@ -1,12 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
   <display-name>web03</display-name>
-  
+<!--   
   <resource-ref>	
-  	<res-ref-name>jdbc/studydb</res-ref-name> <!-- JNDI 이름 -->
-  	<res-type>javax.sql.DataSource</res-type> <!-- 리턴될 자원의 클래스 이름(패키지명 포함) -->
-  	<res-auth>Container</res-auth>			  <!-- 자원 관리의 주체 -->
+  	<res-ref-name>jdbc/studydb</res-ref-name> JNDI 이름
+  	<res-type>javax.sql.DataSource</res-type> 리턴될 자원의 클래스 이름(패키지명 포함)
+  	<res-auth>Container</res-auth>			  자원 관리의 주체
   </resource-ref>
+-->   
+
   
   <!-- 서블릿 선언
   <servlet>
