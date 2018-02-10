@@ -1,8 +1,15 @@
 package lesson03.listener;
 
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+
+
+
+
+
+
 
 
 
@@ -14,8 +21,18 @@ import javax.servlet.ServletContextListener;
 import javax.servlet.annotation.WebListener;
 import javax.sql.DataSource;
 
+
+
+
+
+
+import org.apache.ibatis.io.Resources;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+//import org.apache.catalina.core.ApplicationContext;
 import org.apache.tomcat.dbcp.dbcp.BasicDataSource;
 
+import lesson03.context.ApplicationContext;
 import lesson03.dao.MemberDao;
 import lesson03.util.DBConnectionPool;
 
@@ -29,16 +46,35 @@ public class ContextLoaderListener implements ServletContextListener{
 	static ApplicationContext applicationContext;
 	
 	public static ApplicationContext getApplicationContext() {
-		return applicationcontext;
+		return applicationContext;
 	}
 	
 	@Override
 	public void contextInitialized(ServletContextEvent event) {
 		try{
-			ServletContext sc = event.getServletContext();
+			applicationContext = new ApplicationContext();
 			
-			String propertiesPath = sc.getRealPath(sc.getInitParameter("contextConfigLocation"));
-			applicationContext = new ApplicationContext(propertiesPath);			
+			String resource = "lesson03/dao/mybatis-config.xml";
+			InputStream inputStream = Resources.getResourceAsStream(resource);
+			SqlSessionFactory sqlSessionFactory = new SqlSessionFactoryBuilder().build(inputStream);
+			
+			applicationContext.addBean("sqlSessionFactory", sqlSessionFactory);
+			
+			ServletContext sc = event.getServletContext();
+			String propertiesPath = sc.getRealPath( sc.getInitParameter("contextConfigLocation"));
+			
+			applicationContext.prepareObjectsByProperties(propertiesPath);
+			
+			applicationContext.prepareObjectByAnnotation("");
+			
+			applicationContext.injectDependency();	
+			
+			//ServletContext sc = event.getServletContext();
+			//
+			//String propertiesPath = sc.getRealPath(sc.getInitParameter("contextConfigLocation"));
+			//applicationContext = new ApplicationContext(propertiesPath);			
+			
+			
 			//ServletContext sc = event.getServletContext();
 			
 			//Class.forName(sc.getInitParameter("driver"));
@@ -72,10 +108,7 @@ public class ContextLoaderListener implements ServletContextListener{
 			//memberDao.setDbConnectionPool(connPool);
 			
 			//sc.setAttribute("memberDao", memberDao);
-			
-
-
-			
+	
 		} catch(Throwable e) {
 			e.printStackTrace();
 		}		

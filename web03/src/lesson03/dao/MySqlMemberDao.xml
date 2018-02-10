@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="lesson03.dao.MemberDao">
+  <resultMap type="member" id="memberResultMap">
+    <id     column="MNO"      property="mno"/>
+    <result column="MNAME"    property="mname"/>
+    <result column="EMAIL"    property="email"/>
+    <result column="PWD"      property="pwd"  />
+    <result column="CRE_DATE" property="cre_date" javaType="java.sql.Date"/>
+    <result column="MOD_DATE" property="mod_date" javaType="java.sql.Date"/>    
+  </resultMap>
+  
+  <select id="selectList" resultMap="memberResultMap">
+	  SELECT MNO, MNAME, EMAIL, CRE_DATE 
+        FROM MEMBERS
+       ORDER BY MNO ASC
+  </select>
+  
+  <insert id="insert" parameterType="member">
+  	INSERT INTO MEMBERS(EMAIL   ,PWD   ,MNAME   ,CRE_DATE ,MOD_DATE)
+                 VALUES(#{email},#{pwd},#{mname},NOW()    ,NOW()   );    
+  </insert>
+  
+  <update id="update" parameterType="member">
+    UPDATE MEMBERS 
+       SET EMAIL=#{email}
+          ,MNAME=#{mname}
+          ,MOD_DATE=now()
+     WHERE MNO=#{mno}
+  </update>
+  
+  <delete id="delete" parameterType="int">
+    DELETE FROM MEMBERS WHERE MNO=#{mno}
+  </delete>
+</mapper>
